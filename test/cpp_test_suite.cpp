@@ -42,14 +42,19 @@
 
 #include <string.h>
 
-// dummy putchar
-static char   printf_buffer[100]{};
-static std::size_t printf_idx{ 0U };
+namespace test {
+	static char			printf_buffer[100]{};
+	static std::size_t	printf_idx{ 0U };
 
+	inline void reset_buffering() {
+		printf_idx = 0U;
+		::memset(test::printf_buffer, char(0), 100U);
+	}
+}
 namespace mpaland_dbjdbj {
 	extern "C" inline void _putchar(char character)
 	{
-		printf_buffer[printf_idx++] = character;
+		test::printf_buffer[test::printf_idx++] = character;
 	}
 }
 
@@ -58,24 +63,22 @@ namespace {
 void _out_fct(char character, void* arg)
 {
 	(void)arg;
-	printf_buffer[printf_idx++] = character;
+	test::printf_buffer[test::printf_idx++] = character;
 }
 
 TEST_CASE("printf", "[]") {
-	printf_idx = 0U;
-	memset(printf_buffer, 0xCC, 100U);
+	test::reset_buffering();
 	REQUIRE(mpaland_dbjdbj::printf("% d", 4232) == 5);
-	REQUIRE(printf_buffer[5] == (char)0xCC);
-	printf_buffer[5] = 0;
-	REQUIRE(!strcmp(printf_buffer, " 4232"));
+	REQUIRE(test::printf_buffer[5] == (char)0xCC);
+	test::printf_buffer[5] = 0;
+	REQUIRE(!strcmp(test::printf_buffer, " 4232"));
 }
 
 
 TEST_CASE("fctprintf", "[]") {
-	printf_idx = 0U;
-	memset(printf_buffer, 0xCC, 100U);
+	test::reset_buffering();
 	mpaland_dbjdbj::fctprintf(&_out_fct, nullptr, "This is a test of %X", 0x12EFU);
-	REQUIRE(!strcmp(printf_buffer, "This is a test of 12EF"));
+	REQUIRE(!strcmp(test::printf_buffer, "This is a test of 12EF"));
 }
 
 
