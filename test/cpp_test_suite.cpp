@@ -37,7 +37,6 @@
 #include "catch.hpp"
 
 #define PRINTF_USER_DEFINED_PUTCHAR
-// inside the namespace mpaland_dbjdbj
 #include "../printf++.h"
 
 #include <string.h>
