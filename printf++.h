@@ -44,9 +44,9 @@ namespace mpaland_dbjdbj {
  * \param character Character to output
  */
 #ifdef PRINTF_USER_DEFINED_PUTCHAR
-	extern void _putchar(char character);
+	extern "C" void _putchar(char character);
 #else
-	inline void _putchar(char character) {
+	extern "C" inline void _putchar(char character) {
 		std::putchar(character);
 	}
 #endif
@@ -101,7 +101,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal buffer output
-	/*static*/ inline void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
+	extern "C" inline void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
 	{
 		if (idx < maxlen) {
 			((char*)buffer)[idx] = character;
@@ -110,14 +110,14 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal null output
-	/*static*/ inline void _out_null(char character, void* buffer, size_t idx, size_t maxlen)
+	extern "C" inline void _out_null(char character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)character; (void)buffer; (void)idx; (void)maxlen;
 	}
 
 
 	// internal _putchar wrapper
-	/*static*/ inline void _out_char(char character, void* buffer, size_t idx, size_t maxlen)
+	extern "C" inline void _out_char(char character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)buffer; (void)idx; (void)maxlen;
 		if (character) {
@@ -127,7 +127,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal output function wrapper
-	/*static*/ inline void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
+	extern "C" inline void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)idx; (void)maxlen;
 		// buffer is the output fct pointer
@@ -137,7 +137,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 	// internal strlen
 	// \return The length of the string (excluding the terminating 0)
-	/*static*/ inline unsigned int _strlen(const char* str)
+	extern "C" inline unsigned int _strlen(const char* str)
 	{
 		const char* s;
 		for (s = str; *s; ++s);
@@ -147,14 +147,14 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 	// internal test if char is a digit (0-9)
 	// \return true if char is a digit
-	/*static*/ inline bool _is_digit(char ch)
+	extern "C" inline bool _is_digit(char ch)
 	{
 		return (ch >= '0') && (ch <= '9');
 	}
 
 
 	// internal ASCII string to unsigned int conversion
-	/*static*/ inline unsigned int _atoi(const char** str)
+	extern "C" inline unsigned int _atoi(const char** str)
 	{
 		unsigned int i = 0U;
 		while (_is_digit(**str)) {
@@ -165,7 +165,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal itoa format
-	inline size_t _ntoa_format(out_fct_type out, char* buffer, size_t idx, size_t maxlen, char* buf, size_t len, bool negative, unsigned int base, unsigned int prec, unsigned int width, unsigned int flags)
+	extern "C"  inline size_t _ntoa_format(out_fct_type out, char* buffer, size_t idx, size_t maxlen, char* buf, size_t len, bool negative, unsigned int base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
 		const size_t start_idx = idx;
 
@@ -236,7 +236,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal itoa for 'long' type
-	inline size_t _ntoa_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long value, bool negative, unsigned long base, unsigned int prec, unsigned int width, unsigned int flags)
+	extern "C" inline size_t _ntoa_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long value, bool negative, unsigned long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
 		char buf[PRINTF_NTOA_BUFFER_SIZE];
 		size_t len = 0U;
@@ -256,7 +256,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 	// internal itoa for 'long long' type
 #if defined(PRINTF_SUPPORT_LONG_LONG)
-	inline size_t _ntoa_long_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long long value, bool negative, unsigned long long base, unsigned int prec, unsigned int width, unsigned int flags)
+	extern "C"  inline size_t _ntoa_long_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long long value, bool negative, unsigned long long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
 		char buf[PRINTF_NTOA_BUFFER_SIZE];
 		size_t len = 0U;
@@ -276,7 +276,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 #if defined(PRINTF_SUPPORT_FLOAT)
-	inline size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags)
+	extern "C"  inline size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags)
 	{
 		char buf[PRINTF_FTOA_BUFFER_SIZE];
 		size_t len = 0U;
@@ -415,7 +415,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 
 	// internal vsnprintf
-	inline int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va)
+	extern "C"  inline int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va)
 	{
 		unsigned int flags, width, precision, n;
 		size_t idx = 0U;
@@ -684,7 +684,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	///////////////////////////////////////////////////////////////////////////////
 
 
-	inline int printf(const char* format, ...)
+	extern "C" inline int printf(const char* format, ...)
 	{
 		va_list va;
 		va_start(va, format);
@@ -695,7 +695,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	}
 
 
-	inline int sprintf(char* buffer, const char* format, ...)
+	extern "C" inline int sprintf(char* buffer, const char* format, ...)
 	{
 		va_list va;
 		va_start(va, format);
@@ -705,7 +705,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	}
 
 
-	inline int snprintf(char* buffer, size_t count, const char* format, ...)
+	extern "C"  inline int snprintf(char* buffer, size_t count, const char* format, ...)
 	{
 		va_list va;
 		va_start(va, format);
@@ -715,13 +715,13 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	}
 
 
-	inline int vsnprintf(char* buffer, size_t count, const char* format, va_list va)
+	extern "C"  inline int vsnprintf(char* buffer, size_t count, const char* format, va_list va)
 	{
 		return _vsnprintf(_out_buffer, buffer, count, format, va);
 	}
 
 
-	inline int fctprintf(void(*out)(char character, void* arg), void* arg, const char* format, ...)
+	extern "C" inline int fctprintf(void(*out)(char character, void* arg), void* arg, const char* format, ...)
 	{
 		va_list va;
 		va_start(va, format);

@@ -47,7 +47,7 @@ static char   printf_buffer[100]{};
 static std::size_t printf_idx{ 0U };
 
 namespace mpaland_dbjdbj {
-	inline void _putchar(char character)
+	extern "C" inline void _putchar(char character)
 	{
 		printf_buffer[printf_idx++] = character;
 	}
