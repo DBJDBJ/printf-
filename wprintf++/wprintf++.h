@@ -1,6 +1,7 @@
 #pragma once
 // license and colophon are at eof
 
+#include <cwctype>
 #include <cstdint> 
 #include <cstdarg> 
 #include <string>
@@ -25,11 +26,11 @@
 /// </summary>
 namespace mpaland_dbjdbj::wchar {
 
-/**
- * Output a character to a custom device like UART, used by the printf() function
- * This function is declared here only. You have to write your custom implementation somewhere
- * \param character Character to output
- */
+	/**
+	 * Output a character to a custom device like UART, used by the printf() function
+	 * This function is declared here only. You have to write your custom implementation somewhere
+	 * \param character Character to output
+	 */
 #ifdef PRINTF_USER_DEFINED_PUTCHAR
 	PRINTF_EXTERN_C extern void _putchar(wchar_t character);
 #else
@@ -38,17 +39,22 @@ namespace mpaland_dbjdbj::wchar {
 	}
 #endif
 
-// ntoa conversion buffer size, this must be big enough to hold
-// one converted numeric number including padded zeros (dynamically created on stack)
-// 32 byte is a good default
-constexpr inline const auto PRINTF_NTOA_BUFFER_SIZE   = 32U;
+///////////////////////////////////////////////////////////////////////////////
+namespace inner {
+///////////////////////////////////////////////////////////////////////////////
 
-// ftoa conversion buffer size, this must be big enough to hold
-// one converted float number including padded zeros (dynamically created on stack)
-// 32 byte is a good default
-constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
-// define this to support floating point (%f)
+	// ntoa conversion buffer size, this must be big enough to hold
+	// one converted numeric number including padded zeros (dynamically created on stack)
+	// 32 byte is a good default
+	constexpr inline const auto PRINTF_NTOA_BUFFER_SIZE = 32U;
+
+	// ftoa conversion buffer size, this must be big enough to hold
+	// one converted float number including padded zeros (dynamically created on stack)
+	// 32 byte is a good default
+	constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE = 32U;
+
+	// define this to support floating point (%f)
 #define PRINTF_SUPPORT_FLOAT
 
 // define this to support long long types (%llu or %p)
@@ -76,7 +82,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	constexpr inline const auto FLAGS_WIDTH = (1U << 11U);
 
 
-// output function type
+	// output function type
 	typedef void(*out_fct_type)(wchar_t character, void* buffer, size_t idx, size_t maxlen);
 
 
@@ -107,9 +113,9 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	PRINTF_EXTERN_C inline void _out_char(wchar_t character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)buffer; (void)idx; (void)maxlen;
-		// DBJ: the if (charcter) effectively stops writing wchar_t(0)?
+		// DBJ: the if() bellow effectively stops writing wchar_t(0)?
 		// if (character) {
-			_putchar(character);
+		_putchar(character);
 		// }
 	}
 
@@ -132,12 +138,13 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		return (unsigned int)(s - str);
 	}
 
-
+#include <cwctype>
 	// internal test if wchar_t is a digit (0-9)
+	//  it might be reasonable to restrict your code to just the Roman digits.
 	// \return true if wchar_t is a digit
 	PRINTF_EXTERN_C inline bool _is_digit(wchar_t ch)
 	{
-		return (ch >= '0') && (ch <= '9');
+		return (ch >= L'0') && (ch <= L'9');
 	}
 
 
@@ -146,7 +153,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	{
 		unsigned int i = 0U;
 		while (_is_digit(**str)) {
-			i = i * 10U + (unsigned int)(*((*str)++) - '0');
+			i = i * 10U + (unsigned int)(*((*str)++) - L'0');
 		}
 		return i;
 	}
@@ -159,10 +166,10 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 		// pad leading zeros
 		while (!(flags & FLAGS_LEFT) && (len < prec) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
-			buf[len++] = '0';
+			buf[len++] = L'0';
 		}
 		while (!(flags & FLAGS_LEFT) && (flags & FLAGS_ZEROPAD) && (len < width) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
-			buf[len++] = '0';
+			buf[len++] = L'0';
 		}
 
 		// handle hash
@@ -174,13 +181,13 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				}
 			}
 			if ((base == 16U) && !(flags & FLAGS_UPPERCASE) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
-				buf[len++] = 'x';
+				buf[len++] = L'x';
 			}
 			if ((base == 16U) && (flags & FLAGS_UPPERCASE) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
-				buf[len++] = 'X';
+				buf[len++] = L'X';
 			}
 			if (len < PRINTF_NTOA_BUFFER_SIZE) {
-				buf[len++] = '0';
+				buf[len++] = L'0';
 			}
 		}
 
@@ -190,20 +197,20 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		}
 		if (len < PRINTF_NTOA_BUFFER_SIZE) {
 			if (negative) {
-				buf[len++] = '-';
+				buf[len++] = L'-';
 			}
 			else if (flags & FLAGS_PLUS) {
-				buf[len++] = '+';  // ignore the space if the '+' exists
+				buf[len++] = L'+';  // ignore the space if the '+' exists
 			}
 			else if (flags & FLAGS_SPACE) {
-				buf[len++] = ' ';
+				buf[len++] = L' ';
 			}
 		}
 
 		// pad spaces up to given width
 		if (!(flags & FLAGS_LEFT) && !(flags & FLAGS_ZEROPAD)) {
 			for (size_t i = len; i < width; i++) {
-				out(' ', buffer, idx++, maxlen);
+				out(L' ', buffer, idx++, maxlen);
 			}
 		}
 
@@ -215,7 +222,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		// append pad spaces up to given width
 		if (flags & FLAGS_LEFT) {
 			while (idx - start_idx < width) {
-				out(' ', buffer, idx++, maxlen);
+				out(L' ', buffer, idx++, maxlen);
 			}
 		}
 
@@ -233,7 +240,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		if (!(flags & FLAGS_PRECISION) || value) {
 			do {
 				const wchar_t digit = (wchar_t)(value % base);
-				buf[len++] = digit < 10 ? '0' + digit : (flags & FLAGS_UPPERCASE ? 'A' : 'a') + digit - 10;
+				buf[len++] = digit < 10 ? L'0' + digit : (flags & FLAGS_UPPERCASE ? L'A' : L'a') + digit - 10;
 				value /= base;
 			} while (value && (len < PRINTF_NTOA_BUFFER_SIZE));
 		}
@@ -253,7 +260,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		if (!(flags & FLAGS_PRECISION) || value) {
 			do {
 				const wchar_t digit = (wchar_t)(value % base);
-				buf[len++] = digit < 10 ? '0' + digit : (flags & FLAGS_UPPERCASE ? 'A' : 'a') + digit - 10;
+				buf[len++] = digit < 10 ? L'0' + digit : (flags & FLAGS_UPPERCASE ? L'A' : L'a') + digit - 10;
 				value /= base;
 			} while (value && (len < PRINTF_NTOA_BUFFER_SIZE));
 		}
@@ -289,7 +296,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		}
 		// limit precision to 9, cause a prec >= 10 can lead to overflow errors
 		while ((len < PRINTF_FTOA_BUFFER_SIZE) && (prec > 9U)) {
-			buf[len++] = '0';
+			buf[len++] = L'0';
 			prec--;
 		}
 
@@ -341,11 +348,11 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 			}
 			// add extra 0s
 			while ((len < PRINTF_FTOA_BUFFER_SIZE) && (count-- > 0U)) {
-				buf[len++] = '0';
+				buf[len++] = L'0';
 			}
 			if (len < PRINTF_FTOA_BUFFER_SIZE) {
 				// add decimal
-				buf[len++] = '.';
+				buf[len++] = L'.';
 			}
 		}
 
@@ -359,7 +366,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 		// pad leading zeros
 		while (!(flags & FLAGS_LEFT) && (flags & FLAGS_ZEROPAD) && (len < width) && (len < PRINTF_FTOA_BUFFER_SIZE)) {
-			buf[len++] = '0';
+			buf[len++] = L'0';
 		}
 
 		// handle sign
@@ -368,10 +375,10 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		}
 		if (len < PRINTF_FTOA_BUFFER_SIZE) {
 			if (negative) {
-				buf[len++] = '-';
+				buf[len++] = L'-';
 			}
 			else if (flags & FLAGS_PLUS) {
-				buf[len++] = '+';  // ignore the space if the '+' exists
+				buf[len++] = L'+';  // ignore the space if the '+' exists
 			}
 			else if (flags & FLAGS_SPACE) {
 				buf[len++] = ' ';
@@ -416,7 +423,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 		while (*format)
 		{
 			// format specifier?  %[flags][width][.precision][length]
-			if (*format != '%') {
+			if (*format != L'%') {
 				// no
 				out(*format, buffer, idx++, maxlen);
 				format++;
@@ -431,11 +438,11 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 			flags = 0U;
 			do {
 				switch (*format) {
-				case '0': flags |= FLAGS_ZEROPAD; format++; n = 1U; break;
-				case '-': flags |= FLAGS_LEFT;    format++; n = 1U; break;
-				case '+': flags |= FLAGS_PLUS;    format++; n = 1U; break;
-				case ' ': flags |= FLAGS_SPACE;   format++; n = 1U; break;
-				case '#': flags |= FLAGS_HASH;    format++; n = 1U; break;
+				case L'0': flags |= FLAGS_ZEROPAD; format++; n = 1U; break;
+				case L'-': flags |= FLAGS_LEFT;    format++; n = 1U; break;
+				case L'+': flags |= FLAGS_PLUS;    format++; n = 1U; break;
+				case L' ': flags |= FLAGS_SPACE;   format++; n = 1U; break;
+				case L'#': flags |= FLAGS_HASH;    format++; n = 1U; break;
 				default:                                   n = 0U; break;
 				}
 			} while (n);
@@ -445,7 +452,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 			if (_is_digit(*format)) {
 				width = _atoi(&format);
 			}
-			else if (*format == '*') {
+			else if (*format == L'*') {
 				const int w = va_arg(va, int);
 				if (w < 0) {
 					flags |= FLAGS_LEFT;    // reverse padding
@@ -465,7 +472,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				if (_is_digit(*format)) {
 					precision = _atoi(&format);
 				}
-				else if (*format == '*') {
+				else if (*format == L'*') {
 					precision = (unsigned int)va_arg(va, int);
 					format++;
 				}
@@ -473,33 +480,33 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 			// evaluate length field
 			switch (*format) {
-			case 'l':
+			case L'l':
 				flags |= FLAGS_LONG;
 				format++;
-				if (*format == 'l') {
+				if (*format == L'l') {
 					flags |= FLAGS_LONG_LONG;
 					format++;
 				}
 				break;
-			case 'h':
+			case L'h':
 				flags |= FLAGS_SHORT;
 				format++;
-				if (*format == 'h') {
+				if (*format == L'h') {
 					flags |= FLAGS_CHAR;
 					format++;
 				}
 				break;
 #if defined(PRINTF_SUPPORT_PTRDIFF_T)
-			case 't':
+			case L't':
 				flags |= (sizeof(ptrdiff_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
 				format++;
 				break;
 #endif
-			case 'j':
+			case L'j':
 				flags |= (sizeof(intmax_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
 				format++;
 				break;
-			case 'z':
+			case L'z':
 				flags |= (sizeof(size_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
 				format++;
 				break;
@@ -509,22 +516,22 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 			// evaluate specifier
 			switch (*format) {
-			case 'd':
-			case 'i':
-			case 'u':
-			case 'x':
-			case 'X':
-			case 'o':
-			case 'b': {
+			case L'd':
+			case L'i':
+			case L'u':
+			case L'x':
+			case L'X':
+			case L'o':
+			case L'b': {
 				// set the base
 				unsigned int base;
-				if (*format == 'x' || *format == 'X') {
+				if (*format == L'x' || *format == L'X') {
 					base = 16U;
 				}
-				else if (*format == 'o') {
+				else if (*format == L'o') {
 					base = 8U;
 				}
-				else if (*format == 'b') {
+				else if (*format == L'b') {
 					base = 2U;
 					flags &= ~FLAGS_HASH;   // no hash for bin format
 				}
@@ -533,17 +540,17 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 					flags &= ~FLAGS_HASH;   // no hash for dec format
 				}
 				// uppercase
-				if (*format == 'X') {
+				if (*format == L'X') {
 					flags |= FLAGS_UPPERCASE;
 				}
 
 				// no plus or space flag for u, x, X, o, b
-				if ((*format != 'i') && (*format != 'd')) {
+				if ((*format != L'i') && (*format != L'd')) {
 					flags &= ~(FLAGS_PLUS | FLAGS_SPACE);
 				}
 
 				// convert the integer
-				if ((*format == 'i') || (*format == 'd')) {
+				if ((*format == L'i') || (*format == L'd')) {
 					// signed
 					if (flags & FLAGS_LONG_LONG) {
 #if defined(PRINTF_SUPPORT_LONG_LONG)
@@ -571,7 +578,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 						idx = _ntoa_long(out, buffer, idx, maxlen, va_arg(va, unsigned long), false, base, precision, width, flags);
 					}
 					else {
-						const unsigned int value = (flags & FLAGS_CHAR) ? ( wchar_t)va_arg(va, unsigned int) : (flags & FLAGS_SHORT) ? (unsigned short int)va_arg(va, unsigned int) : va_arg(va, unsigned int);
+						const unsigned int value = (flags & FLAGS_CHAR) ? (wchar_t)va_arg(va, unsigned int) : (flags & FLAGS_SHORT) ? (unsigned short int)va_arg(va, unsigned int) : va_arg(va, unsigned int);
 						idx = _ntoa_long(out, buffer, idx, maxlen, value, false, base, precision, width, flags);
 					}
 				}
@@ -579,8 +586,8 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				break;
 			}
 #if defined(PRINTF_SUPPORT_FLOAT)
-			case 'f':
-			case 'F':
+			case L'f':
+			case L'F':
 				idx = _ftoa(out, buffer, idx, maxlen, va_arg(va, double), precision, width, flags);
 				format++;
 				break;
@@ -605,7 +612,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				break;
 			}
 
-			case 's': {
+			case L's': {
 				wchar_t* p = va_arg(va, wchar_t*);
 				unsigned int l = _strlen(p);
 				// pre padding
@@ -614,7 +621,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				}
 				if (!(flags & FLAGS_LEFT)) {
 					while (l++ < width) {
-						out(' ', buffer, idx++, maxlen);
+						out(L' ', buffer, idx++, maxlen);
 					}
 				}
 				// string output
@@ -624,14 +631,14 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				// post padding
 				if (flags & FLAGS_LEFT) {
 					while (l++ < width) {
-						out(' ', buffer, idx++, maxlen);
+						out(L' ', buffer, idx++, maxlen);
 					}
 				}
 				format++;
 				break;
 			}
 
-			case 'p': {
+			case L'p': {
 				width = sizeof(void*) * 2U;
 				flags |= FLAGS_ZEROPAD | FLAGS_UPPERCASE;
 #if defined(PRINTF_SUPPORT_LONG_LONG)
@@ -649,8 +656,8 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 				break;
 			}
 
-			case '%':
-				out('%', buffer, idx++, maxlen);
+			case L'%':
+				out(L'%', buffer, idx++, maxlen);
 				format++;
 				break;
 
@@ -669,15 +676,17 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	}
 
 
-	///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+} // inner
+///////////////////////////////////////////////////////////////////////////////
 
 
 	PRINTF_EXTERN_C inline int printf(const wchar_t* format, ...)
 	{
 		va_list va;
 		va_start(va, format);
-		wchar_t buffer[1];
-		const int ret = _vsnprintf(_out_char, buffer, (size_t)-1, format, va);
+		wchar_t buffer[1]{};
+		const int ret = inner::_vsnprintf(inner::_out_char, buffer, (size_t)-1, format, va);
 		va_end(va);
 		return ret;
 	}
@@ -687,7 +696,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	{
 		va_list va;
 		va_start(va, format);
-		const int ret = _vsnprintf(_out_buffer, buffer, (size_t)-1, format, va);
+		const int ret = inner::_vsnprintf(inner::_out_buffer, buffer, (size_t)-1, format, va);
 		va_end(va);
 		return ret;
 	}
@@ -697,7 +706,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	{
 		va_list va;
 		va_start(va, format);
-		const int ret = _vsnprintf(_out_buffer, buffer, count, format, va);
+		const int ret = inner::_vsnprintf(inner::_out_buffer, buffer, count, format, va);
 		va_end(va);
 		return ret;
 	}
@@ -705,7 +714,7 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
 	PRINTF_EXTERN_C  inline int vsnprintf(wchar_t* buffer, size_t count, const wchar_t* format, va_list va)
 	{
-		return _vsnprintf(_out_buffer, buffer, count, format, va);
+		return inner::_vsnprintf(inner::_out_buffer, buffer, count, format, va);
 	}
 
 
@@ -713,8 +722,8 @@ constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 	{
 		va_list va;
 		va_start(va, format);
-		const out_fct_wrap_type out_fct_wrap = { out, arg };
-		const int ret = _vsnprintf(_out_fct, (wchar_t*)&out_fct_wrap, (size_t)-1, format, va);
+		const inner::out_fct_wrap_type out_fct_wrap = { out, arg };
+		const int ret = inner::_vsnprintf(inner::_out_fct, (wchar_t*)&out_fct_wrap, (size_t)-1, format, va);
 		va_end(va);
 		return ret;
 	}
