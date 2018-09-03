@@ -315,16 +315,16 @@ TEST_CASE( "wide - flag", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42"));
 
 	sprintf(buffer, L"%-5d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   "));
 
 	sprintf(buffer, L"%-5d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  "));
 
 	sprintf(buffer, L"%-15d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             "));
 
 	sprintf(buffer, L"%-15d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            "));
 
 	sprintf(buffer, L"%-0d", 42);
 	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42"));
@@ -333,16 +333,16 @@ TEST_CASE( "wide - flag", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42"));
 
 	sprintf(buffer, L"%-05d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   "));
 
 	sprintf(buffer, L"%-05d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  "));
 
 	sprintf(buffer, L"%-015d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             "));
 
 	sprintf(buffer, L"%-015d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            "));
 
 	sprintf(buffer, L"%0-d", 42);
 	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42"));
@@ -351,16 +351,16 @@ TEST_CASE( "wide - flag", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42"));
 
 	sprintf(buffer, L"%0-5d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42   "));
 
 	sprintf(buffer, L"%0-5d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42  "));
 
 	sprintf(buffer, L"%0-15d", 42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"42             "));
 
 	sprintf(buffer, L"%0-15d", -42);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-42            "));
 }
 
 
@@ -559,49 +559,49 @@ TEST_CASE( "wide width -20", "[]") {
 	wchar_t buffer[wide_test::printf_buffer_size]{};
 
 	sprintf(buffer, L"%-20s", L"Hello");
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"Hello               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"Hello               "));
 
 	sprintf(buffer, L"%-20d", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                "));
 
 	sprintf(buffer, L"%-20d", -1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"-1024               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"-1024               "));
 
 	sprintf(buffer, L"%-20i", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                "));
 
 	sprintf(buffer, L"%-20i", -1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"-1024               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"-1024               "));
 
 	sprintf(buffer, L"%-20u", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024                "));
 
 	sprintf(buffer, L"%-20.4f", 1024.1234);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024.1234           L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1024.1234           "));
 
 	sprintf(buffer, L"%-20u", 4294966272U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"4294966272          L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"4294966272          "));
 
 	sprintf(buffer, L"%-20o", 511);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"777                 L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"777                 "));
 
 	sprintf(buffer, L"%-20o", 4294966785U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"37777777001         L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"37777777001         "));
 
 	sprintf(buffer, L"%-20x", 305441741);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1234abcd            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1234abcd            "));
 
 	sprintf(buffer, L"%-20x", 3989525555U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"edcb5433            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"edcb5433            "));
 
 	sprintf(buffer, L"%-20X", 305441741);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1234ABCD            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"1234ABCD            "));
 
 	sprintf(buffer, L"%-20X", 3989525555U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"EDCB5433            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"EDCB5433            "));
 
 	sprintf(buffer, L"%-20c", 'x');
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"x                   L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"x                   "));
 
 	sprintf(buffer, L"|%5d| |%-2d| |%5d|", 9, 9, 9);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"|    9| |9 | |    9|"));
@@ -621,46 +621,46 @@ TEST_CASE( "wide width 0-20", "[]") {
 	wchar_t buffer[wide_test::printf_buffer_size]{};
 
 	sprintf(buffer, L"%0-20s", L"Hello");
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"Hello               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"Hello               "));
 
 	sprintf(buffer, L"%0-20d", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                "));
 
 	sprintf(buffer, L"%0-20d", -1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-1024               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-1024               "));
 
 	sprintf(buffer, L"%0-20i", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                "));
 
 	sprintf(buffer, L"%0-20i", -1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-1024               L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"-1024               "));
 
 	sprintf(buffer, L"%0-20u", 1024);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1024                "));
 
 	sprintf(buffer, L"%0-20u", 4294966272U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"4294966272          L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"4294966272          "));
 
 	sprintf(buffer, L"%0-20o", 511);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"777                 L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"777                 "));
 
 	sprintf(buffer, L"%0-20o", 4294966785U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"37777777001         L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"37777777001         "));
 
 	sprintf(buffer, L"%0-20x", 305441741);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1234abcd            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1234abcd            "));
 
 	sprintf(buffer, L"%0-20x", 3989525555U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"edcb5433            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"edcb5433            "));
 
 	sprintf(buffer, L"%0-20X", 305441741);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1234ABCD            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"1234ABCD            "));
 
 	sprintf(buffer, L"%0-20X", 3989525555U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"EDCB5433            L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"EDCB5433            "));
 
 	sprintf(buffer, L"%0-20c", 'x');
-	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"x                   L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer,  L"x                   "));
 }
 
 
@@ -876,13 +876,13 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L""));
 
 	sprintf(buffer, L"%20.0s", L"Hello testing");
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%.s", L"Hello testing");
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L""));
 
 	sprintf(buffer, L"%20.s", L"Hello testing");
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.0d", 1024);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                1024"));
@@ -891,7 +891,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"               -1024"));
 
 	sprintf(buffer, L"%20.d", 0);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.0i", 1024);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                1024"));
@@ -900,7 +900,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"               -1024"));
 
 	sprintf(buffer, L"%20.i", 0);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.u", 1024);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                1024"));
@@ -909,7 +909,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"          4294966272"));
 
 	sprintf(buffer, L"%20.u", 0U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.o", 511);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                 777"));
@@ -918,7 +918,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"         37777777001"));
 
 	sprintf(buffer, L"%20.o", 0U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.x", 305441741);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"            1234abcd"));
@@ -933,7 +933,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"            edcb5433"));
 
 	sprintf(buffer, L"%20.x", 0U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 
 	sprintf(buffer, L"%20.X", 305441741);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"            1234ABCD"));
@@ -942,7 +942,7 @@ TEST_CASE( "wide length", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"            EDCB5433"));
 
 	sprintf(buffer, L"%20.X", 0U);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    L"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"                    "));
 }
 
 
