@@ -1,46 +1,54 @@
 #pragma once
-// license and brief are at eof
+// license and colophon are at eof
 
 #include <cstdint> 
 #include <cstdarg> 
+#include <string>
+
+#ifndef _HAS_CXX17 
+#	error __FILE__ " -- can participate in MSVC C++17 builds only"
+#endif
+
+#ifndef _UNICODE
+#	error __FILE__ " -- can participate in UNICODE builds only"
+#endif
 
 // I personlay think 'extern "C"' here can do no harm
 // it just preserves the names.
 // That is CL does not mangle them 
 #define PRINTF_EXTERN_C  extern "C"
 
-namespace mpaland_dbjdbj {
+/// <summary>
+/// we use namespace mpaland_dbjdbj::wchar
+/// to distiguish from mpaland_dbjdbj 
+/// which is a narrow (char) version of the same
+/// </summary>
+namespace mpaland_dbjdbj::wchar {
 
-	/**
-	 * Output a character to a custom device like UART, used by the printf() function
-	 * This function is declared here only. You have to write your custom implementation somewhere
-	 * \param character Character to output
-	 */
+/**
+ * Output a character to a custom device like UART, used by the printf() function
+ * This function is declared here only. You have to write your custom implementation somewhere
+ * \param character Character to output
+ */
 #ifdef PRINTF_USER_DEFINED_PUTCHAR
-	PRINTF_EXTERN_C void _putchar(char character);
+	PRINTF_EXTERN_C extern void _putchar(wchar_t character);
 #else
-	 // canonical implementation
-	PRINTF_EXTERN_C inline void _putchar(char character) {
-		std::putchar(character);
+	PRINTF_EXTERN_C inline void _putchar(wchar_t character) {
+		std::putwchar(character);
 	}
 #endif
 
-///////////////////////////////////////////////////////////////////////////////
-namespace inner {
-///////////////////////////////////////////////////////////////////////////////
+// ntoa conversion buffer size, this must be big enough to hold
+// one converted numeric number including padded zeros (dynamically created on stack)
+// 32 byte is a good default
+constexpr inline const auto PRINTF_NTOA_BUFFER_SIZE   = 32U;
 
+// ftoa conversion buffer size, this must be big enough to hold
+// one converted float number including padded zeros (dynamically created on stack)
+// 32 byte is a good default
+constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE =   32U;
 
-	// ntoa conversion buffer size, this must be big enough to hold
-	// one converted numeric number including padded zeros (dynamically created on stack)
-	// 32 byte is a good default
-	constexpr inline const auto PRINTF_NTOA_BUFFER_SIZE = 32U;
-
-	// ftoa conversion buffer size, this must be big enough to hold
-	// one converted float number including padded zeros (dynamically created on stack)
-	// 32 byte is a good default
-	constexpr inline const auto PRINTF_FTOA_BUFFER_SIZE = 32U;
-
-	// define this to support floating point (%f)
+// define this to support floating point (%f)
 #define PRINTF_SUPPORT_FLOAT
 
 // define this to support long long types (%llu or %p)
@@ -68,45 +76,46 @@ namespace inner {
 	constexpr inline const auto FLAGS_WIDTH = (1U << 11U);
 
 
-	// output function type
-	typedef void(*out_fct_type)(char character, void* buffer, size_t idx, size_t maxlen);
+// output function type
+	typedef void(*out_fct_type)(wchar_t character, void* buffer, size_t idx, size_t maxlen);
 
 
 	// wrapper (used as buffer) for output function type
 	typedef struct {
-		void(*fct)(char character, void* arg);
+		void(*fct)(wchar_t character, void* arg);
 		void* arg;
 	} out_fct_wrap_type;
 
 
 	// internal buffer output
-	PRINTF_EXTERN_C inline void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
+	PRINTF_EXTERN_C inline void _out_buffer(wchar_t character, void* buffer, size_t idx, size_t maxlen)
 	{
 		if (idx < maxlen) {
-			((char*)buffer)[idx] = character;
+			((wchar_t*)buffer)[idx] = character;
 		}
 	}
 
 
 	// internal null output
-	PRINTF_EXTERN_C inline void _out_null(char character, void* buffer, size_t idx, size_t maxlen)
+	PRINTF_EXTERN_C inline void _out_null(wchar_t character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)character; (void)buffer; (void)idx; (void)maxlen;
 	}
 
 
 	// internal _putchar wrapper
-	PRINTF_EXTERN_C inline void _out_char(char character, void* buffer, size_t idx, size_t maxlen)
+	PRINTF_EXTERN_C inline void _out_char(wchar_t character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)buffer; (void)idx; (void)maxlen;
-		if (character) {
+		// DBJ: the if (charcter) effectively stops writing wchar_t(0)?
+		// if (character) {
 			_putchar(character);
-		}
+		// }
 	}
 
 
 	// internal output function wrapper
-	PRINTF_EXTERN_C inline void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
+	PRINTF_EXTERN_C inline void _out_fct(wchar_t character, void* buffer, size_t idx, size_t maxlen)
 	{
 		(void)idx; (void)maxlen;
 		// buffer is the output fct pointer
@@ -116,24 +125,24 @@ namespace inner {
 
 	// internal strlen
 	// \return The length of the string (excluding the terminating 0)
-	PRINTF_EXTERN_C inline unsigned int _strlen(const char* str)
+	PRINTF_EXTERN_C inline unsigned int _strlen(const wchar_t* str)
 	{
-		const char* s;
+		const wchar_t* s;
 		for (s = str; *s; ++s);
 		return (unsigned int)(s - str);
 	}
 
 
-	// internal test if char is a digit (0-9)
-	// \return true if char is a digit
-	PRINTF_EXTERN_C inline bool _is_digit(char ch)
+	// internal test if wchar_t is a digit (0-9)
+	// \return true if wchar_t is a digit
+	PRINTF_EXTERN_C inline bool _is_digit(wchar_t ch)
 	{
 		return (ch >= '0') && (ch <= '9');
 	}
 
 
 	// internal ASCII string to unsigned int conversion
-	PRINTF_EXTERN_C inline unsigned int _atoi(const char** str)
+	PRINTF_EXTERN_C inline unsigned int _atoi(const wchar_t** str)
 	{
 		unsigned int i = 0U;
 		while (_is_digit(**str)) {
@@ -144,7 +153,7 @@ namespace inner {
 
 
 	// internal itoa format
-	PRINTF_EXTERN_C  inline size_t _ntoa_format(out_fct_type out, char* buffer, size_t idx, size_t maxlen, char* buf, size_t len, bool negative, unsigned int base, unsigned int prec, unsigned int width, unsigned int flags)
+	PRINTF_EXTERN_C  inline size_t _ntoa_format(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, wchar_t* buf, size_t len, bool negative, unsigned int base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
 		const size_t start_idx = idx;
 
@@ -215,15 +224,15 @@ namespace inner {
 
 
 	// internal itoa for 'long' type
-	PRINTF_EXTERN_C inline size_t _ntoa_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long value, bool negative, unsigned long base, unsigned int prec, unsigned int width, unsigned int flags)
+	PRINTF_EXTERN_C inline size_t _ntoa_long(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, unsigned long value, bool negative, unsigned long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		char buf[PRINTF_NTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE];
 		size_t len = 0U;
 
 		// write if precision != 0 and value is != 0
 		if (!(flags & FLAGS_PRECISION) || value) {
 			do {
-				const char digit = (char)(value % base);
+				const wchar_t digit = (wchar_t)(value % base);
 				buf[len++] = digit < 10 ? '0' + digit : (flags & FLAGS_UPPERCASE ? 'A' : 'a') + digit - 10;
 				value /= base;
 			} while (value && (len < PRINTF_NTOA_BUFFER_SIZE));
@@ -235,15 +244,15 @@ namespace inner {
 
 	// internal itoa for 'long long' type
 #if defined(PRINTF_SUPPORT_LONG_LONG)
-	PRINTF_EXTERN_C  inline size_t _ntoa_long_long(out_fct_type out, char* buffer, size_t idx, size_t maxlen, unsigned long long value, bool negative, unsigned long long base, unsigned int prec, unsigned int width, unsigned int flags)
+	PRINTF_EXTERN_C  inline size_t _ntoa_long_long(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, unsigned long long value, bool negative, unsigned long long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		char buf[PRINTF_NTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE];
 		size_t len = 0U;
 
 		// write if precision != 0 and value is != 0
 		if (!(flags & FLAGS_PRECISION) || value) {
 			do {
-				const char digit = (char)(value % base);
+				const wchar_t digit = (wchar_t)(value % base);
 				buf[len++] = digit < 10 ? '0' + digit : (flags & FLAGS_UPPERCASE ? 'A' : 'a') + digit - 10;
 				value /= base;
 			} while (value && (len < PRINTF_NTOA_BUFFER_SIZE));
@@ -255,9 +264,9 @@ namespace inner {
 
 
 #if defined(PRINTF_SUPPORT_FLOAT)
-	PRINTF_EXTERN_C  inline size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags)
+	PRINTF_EXTERN_C  inline size_t _ftoa(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		char buf[PRINTF_FTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_FTOA_BUFFER_SIZE];
 		size_t len = 0U;
 		double diff = 0.0;
 
@@ -325,7 +334,7 @@ namespace inner {
 			// now do fractional part, as an unsigned number
 			while (len < PRINTF_FTOA_BUFFER_SIZE) {
 				--count;
-				buf[len++] = (char)(48U + (frac % 10U));
+				buf[len++] = (wchar_t)(48U + (frac % 10U));
 				if (!(frac /= 10U)) {
 					break;
 				}
@@ -342,7 +351,7 @@ namespace inner {
 
 		// do whole part, number is reversed
 		while (len < PRINTF_FTOA_BUFFER_SIZE) {
-			buf[len++] = (char)(48 + (whole % 10));
+			buf[len++] = (wchar_t)(48 + (whole % 10));
 			if (!(whole /= 10)) {
 				break;
 			}
@@ -394,7 +403,7 @@ namespace inner {
 
 
 	// internal vsnprintf
-	PRINTF_EXTERN_C  inline int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va)
+	PRINTF_EXTERN_C  inline int _vsnprintf(out_fct_type out, wchar_t* buffer, const size_t maxlen, const wchar_t* format, va_list va)
 	{
 		unsigned int flags, width, precision, n;
 		size_t idx = 0U;
@@ -547,7 +556,7 @@ namespace inner {
 						idx = _ntoa_long(out, buffer, idx, maxlen, (unsigned long)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
 					}
 					else {
-						const int value = (flags & FLAGS_CHAR) ? (char)va_arg(va, int) : (flags & FLAGS_SHORT) ? (short int)va_arg(va, int) : va_arg(va, int);
+						const int value = (flags & FLAGS_CHAR) ? (wchar_t)va_arg(va, int) : (flags & FLAGS_SHORT) ? (short int)va_arg(va, int) : va_arg(va, int);
 						idx = _ntoa_long(out, buffer, idx, maxlen, (unsigned int)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
 					}
 				}
@@ -562,7 +571,7 @@ namespace inner {
 						idx = _ntoa_long(out, buffer, idx, maxlen, va_arg(va, unsigned long), false, base, precision, width, flags);
 					}
 					else {
-						const unsigned int value = (flags & FLAGS_CHAR) ? (unsigned char)va_arg(va, unsigned int) : (flags & FLAGS_SHORT) ? (unsigned short int)va_arg(va, unsigned int) : va_arg(va, unsigned int);
+						const unsigned int value = (flags & FLAGS_CHAR) ? ( wchar_t)va_arg(va, unsigned int) : (flags & FLAGS_SHORT) ? (unsigned short int)va_arg(va, unsigned int) : va_arg(va, unsigned int);
 						idx = _ntoa_long(out, buffer, idx, maxlen, value, false, base, precision, width, flags);
 					}
 				}
@@ -584,8 +593,8 @@ namespace inner {
 						out(' ', buffer, idx++, maxlen);
 					}
 				}
-				// char output
-				out((char)va_arg(va, int), buffer, idx++, maxlen);
+				// wchar_t output
+				out((wchar_t)va_arg(va, int), buffer, idx++, maxlen);
 				// post padding
 				if (flags & FLAGS_LEFT) {
 					while (l++ < width) {
@@ -597,7 +606,7 @@ namespace inner {
 			}
 
 			case 's': {
-				char* p = va_arg(va, char*);
+				wchar_t* p = va_arg(va, wchar_t*);
 				unsigned int l = _strlen(p);
 				// pre padding
 				if (flags & FLAGS_PRECISION) {
@@ -653,33 +662,29 @@ namespace inner {
 		}
 
 		// termination
-		out((char)0, buffer, idx < maxlen ? idx : maxlen - 1U, maxlen);
+		out(wchar_t(0), buffer, idx < maxlen ? idx : maxlen - 1U, maxlen);
 
 		// return written chars without terminating \0
-		return (int)idx;
+		return int(idx);
 	}
 
 
-///////////////////////////////////////////////////////////////////////////////
-} // namespace inner 
-///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 
 
-	PRINTF_EXTERN_C inline int printf(const char* format, ...)
+	PRINTF_EXTERN_C inline int printf(const wchar_t* format, ...)
 	{
-		using namespace inner;
 		va_list va;
 		va_start(va, format);
-		char buffer[1];
+		wchar_t buffer[1];
 		const int ret = _vsnprintf(_out_char, buffer, (size_t)-1, format, va);
 		va_end(va);
 		return ret;
 	}
 
 
-	PRINTF_EXTERN_C inline int sprintf(char* buffer, const char* format, ...)
+	PRINTF_EXTERN_C inline int sprintf(wchar_t* buffer, const wchar_t* format, ...)
 	{
-		using namespace inner;
 		va_list va;
 		va_start(va, format);
 		const int ret = _vsnprintf(_out_buffer, buffer, (size_t)-1, format, va);
@@ -688,9 +693,8 @@ namespace inner {
 	}
 
 
-	PRINTF_EXTERN_C  inline int snprintf(char* buffer, size_t count, const char* format, ...)
+	PRINTF_EXTERN_C  inline int snprintf(wchar_t* buffer, size_t count, const wchar_t* format, ...)
 	{
-		using namespace inner;
 		va_list va;
 		va_start(va, format);
 		const int ret = _vsnprintf(_out_buffer, buffer, count, format, va);
@@ -699,24 +703,32 @@ namespace inner {
 	}
 
 
-	PRINTF_EXTERN_C  inline int vsnprintf(char* buffer, size_t count, const char* format, va_list va)
+	PRINTF_EXTERN_C  inline int vsnprintf(wchar_t* buffer, size_t count, const wchar_t* format, va_list va)
 	{
-		return inner::_vsnprintf(inner::_out_buffer, buffer, count, format, va);
+		return _vsnprintf(_out_buffer, buffer, count, format, va);
 	}
 
 
-	PRINTF_EXTERN_C inline int fctprintf(void(*out)(char character, void* arg), void* arg, const char* format, ...)
+	PRINTF_EXTERN_C inline int fctprintf(void(*out)(wchar_t character, void* arg), void* arg, const wchar_t* format, ...)
 	{
 		va_list va;
 		va_start(va, format);
-		const inner::out_fct_wrap_type out_fct_wrap = { out, arg };
-		const int ret = inner::_vsnprintf( inner::_out_fct, (char*)&out_fct_wrap, (size_t)-1, format, va);
+		const out_fct_wrap_type out_fct_wrap = { out, arg };
+		const int ret = _vsnprintf(_out_fct, (wchar_t*)&out_fct_wrap, (size_t)-1, format, va);
 		va_end(va);
 		return ret;
 	}
 
 } // namespace mpaland_dbjdbj 
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// http://www.firstobject.com/wchar_t-string-on-linux-osx-windows.htm
+// wchar_t (UNICODE) is the fastest code on windows
+// and not so fast code on LINUX 
+// thus we will focus on windows UNICODE builds only in a separate file
+// and this is the file
+//
 ///////////////////////////////////////////////////////////////////////////////
 // \author (c) C VERSION -- Marco Paland (info@paland.com)
 //             2014-2018, PALANDesign Hannover, Germany
