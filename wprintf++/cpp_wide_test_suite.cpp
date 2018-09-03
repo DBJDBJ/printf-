@@ -1110,7 +1110,7 @@ TEST_CASE( "wide types", "[]") {
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"A Test"));
 
 	sprintf(buffer, L"%hhu", 0xFFFFUL);
-	REQUIRE(wide_test::printf_buffer_equals( buffer, L"255"));
+	REQUIRE(wide_test::printf_buffer_equals( buffer, L"65535"));
 
 	sprintf(buffer, L"%hu", 0x123456UL);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"13398"));
