@@ -9,7 +9,7 @@
 
 - Header only C++17 version of [printf](https://github.com/mpaland/printf)
 - Immediately usable in any C++17 project.
-- Use of ```wchar_t``` for ```WIN32``` projects is on the roadmap.
+- Use of ```wchar_t``` for ```WIN32``` projects is in the [wprintf++ project](https://github.com/DBJDBJ/printf_plusplus/tree/master/wprintf%2B%2B) in this same Visual Studio solution.
 
 
 ## Usage
