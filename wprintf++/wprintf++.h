@@ -686,6 +686,7 @@ namespace inner {
 
 	PRINTF_EXTERN_C inline int printf(const wchar_t* format, ...)
 	{
+		_ASSERTE(format);
 		va_list va;
 		va_start(va, format);
 		wchar_t buffer[1]{};
@@ -697,6 +698,7 @@ namespace inner {
 
 	PRINTF_EXTERN_C inline int sprintf(wchar_t* buffer, const wchar_t* format, ...)
 	{
+		_ASSERTE(buffer);
 		va_list va;
 		va_start(va, format);
 		const int ret = inner::_vsnprintf(inner::_out_buffer, buffer, (size_t)-1, format, va);
@@ -717,12 +719,15 @@ namespace inner {
 
 	PRINTF_EXTERN_C  inline int vsnprintf(wchar_t* buffer, size_t count, const wchar_t* format, va_list va)
 	{
+		_ASSERTE(buffer);
+		_ASSERTE(format);
 		return inner::_vsnprintf(inner::_out_buffer, buffer, count, format, va);
 	}
 
 
 	PRINTF_EXTERN_C inline int fctprintf(void(*out)(wchar_t character, void* arg), void* arg, const wchar_t* format, ...)
 	{
+		_ASSERTE(format);
 		va_list va;
 		va_start(va, format);
 		const inner::out_fct_wrap_type out_fct_wrap = { out, arg };
