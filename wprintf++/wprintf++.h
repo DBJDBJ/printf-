@@ -14,10 +14,14 @@
 #	error __FILE__ " -- can participate in UNICODE builds only"
 #endif
 
+#ifdef PRINTF_DECLARE_EXTERN_C
 // I personlay think 'extern "C"' here can do no harm
 // it just preserves the names.
 // That is CL does not mangle them 
 #define PRINTF_EXTERN_C  extern "C"
+#else
+#define PRINTF_EXTERN_C
+#endif
 
 /// <summary>
 /// we use namespace mpaland_dbjdbj::wchar
@@ -138,7 +142,6 @@ namespace inner {
 		return (unsigned int)(s - str);
 	}
 
-#include <cwctype>
 	// internal test if wchar_t is a digit (0-9)
 	//  it might be reasonable to restrict your code to just the Roman digits.
 	// \return true if wchar_t is a digit
@@ -148,7 +151,7 @@ namespace inner {
 	}
 
 
-	// internal ASCII string to unsigned int conversion
+	// internal UTF-8 string to unsigned int conversion
 	PRINTF_EXTERN_C inline unsigned int _atoi(const wchar_t** str)
 	{
 		unsigned int i = 0U;
@@ -233,7 +236,7 @@ namespace inner {
 	// internal itoa for 'long' type
 	PRINTF_EXTERN_C inline size_t _ntoa_long(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, unsigned long value, bool negative, unsigned long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE]{};
 		size_t len = 0U;
 
 		// write if precision != 0 and value is != 0
@@ -253,7 +256,7 @@ namespace inner {
 #if defined(PRINTF_SUPPORT_LONG_LONG)
 	PRINTF_EXTERN_C  inline size_t _ntoa_long_long(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, unsigned long long value, bool negative, unsigned long long base, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_NTOA_BUFFER_SIZE]{};
 		size_t len = 0U;
 
 		// write if precision != 0 and value is != 0
@@ -273,7 +276,7 @@ namespace inner {
 #if defined(PRINTF_SUPPORT_FLOAT)
 	PRINTF_EXTERN_C  inline size_t _ftoa(out_fct_type out, wchar_t* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags)
 	{
-		wchar_t buf[PRINTF_FTOA_BUFFER_SIZE];
+		wchar_t buf[PRINTF_FTOA_BUFFER_SIZE]{};
 		size_t len = 0U;
 		double diff = 0.0;
 

@@ -1017,7 +1017,10 @@ TEST_CASE( "wide float", "[]") {
 
 
 TEST_CASE( "wide types", "[]") {
-	wchar_t buffer[wide_test::printf_buffer_size]{};
+	
+	//wchar_t buffer[wide_test::printf_buffer_size]{};
+	wchar_t * buffer = wide_test::reset_buffering();
+
 
 	sprintf(buffer, L"%i", 0);
 	REQUIRE(wide_test::printf_buffer_equals( buffer, L"0"));
