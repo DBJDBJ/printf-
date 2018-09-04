@@ -1,6 +1,6 @@
 # wprintf++
 
-### This is wchar_t version of printf++_
+### This is WIN32, wchar_t version of the [printf++ project](https://github.com/DBJDBJ/printf_plusplus)
 
 ### This is a light C++ transformation from the original project of [Marco Paland](https://github.com/mpaland/printf)
 
