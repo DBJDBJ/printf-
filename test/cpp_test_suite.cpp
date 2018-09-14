@@ -1,3 +1,4 @@
+// #define _ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
 // license and brief ar at eof
 // use the 'catch' test framework
 #define CATCH_CONFIG_MAIN

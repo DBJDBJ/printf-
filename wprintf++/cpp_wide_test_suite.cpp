@@ -1172,14 +1172,12 @@ TEST_CASE( "wide pointer", "[]") {
 	}
 }
 
-
 TEST_CASE( "wide unknown flag", "[]") {
 	wchar_t * buffer = wide_test::reset_buffering();
 
 	sprintf(buffer, L"%kmarco", 42, 37);
 	REQUIRE(wide_test::printf_buffer_equals( L"kmarco"));
 }
-
 
 TEST_CASE( "wide buffer length", "[]") {
 	wchar_t * buffer = wide_test::reset_buffering();
