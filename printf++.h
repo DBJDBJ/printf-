@@ -1,4 +1,6 @@
 #pragma once
+// NOTE: C++17 or C++14 are not required. This is def. C++11 
+// Have not tried it, but I think this can go "down" all the way to C++98
 // license and brief are at eof
 
 #include <cstdint> 
