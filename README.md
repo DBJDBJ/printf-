@@ -11,7 +11,7 @@
 - Immediately usable in any C++17 project.
 - Use of ```wchar_t``` for ```WIN32``` projects is in the [wprintf++ project](https://github.com/DBJDBJ/printf_plusplus/tree/master/wprintf%2B%2B) in this same Visual Studio solution.
 
-NOTE: C++17 or C++14 are not required. This is def. C++11. I Have not tried it, but I think this can go "down" all the way to C++98.
+NOTE: Because inline variables are used, C++17 **is** required. 
 
 ## Usage
 
