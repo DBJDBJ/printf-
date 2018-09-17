@@ -4,14 +4,14 @@
 #include <cstdint> 
 #include <cstdarg> 
 
-#ifdef PRINTF_DECLARE_EXTERN_C
+// #ifdef PRINTF_DECLARE_EXTERN_C
 // I personlay think 'extern "C"' here can do no harm
 // it just preserves the names.
 // That is CL does not mangle them 
 #define PRINTF_EXTERN_C  extern "C"
-#else
-#define PRINTF_EXTERN_C
-#endif
+// #else
+// #define PRINTF_EXTERN_C
+// #endif
 
 namespace mpaland_dbjdbj {
 
