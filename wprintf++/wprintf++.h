@@ -1,4 +1,12 @@
 #pragma once
+// license and brief are at eof
+// NOTE: C++17 is required
+// Due to use of inline variables
+// https://blogs.msdn.microsoft.com/vcblog/2018/04/09/msvc-now-correctly-reports-__cplusplus/
+// use: /Zc:__cplusplus	/std:c++17
+#if __cplusplus < 201703L
+#error C++17 REQUIRED
+#endif
 // license and colophon are at eof
 
 #include <cwctype>

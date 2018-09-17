@@ -1,7 +1,12 @@
 #pragma once
-// NOTE: C++17 or C++14 are not required. This is def. C++11 
-// Have not tried it, but I think this can go "down" all the way to C++98
+// NOTE: C++17 is required
+// Due to use of inline variables
 // license and brief are at eof
+// https://blogs.msdn.microsoft.com/vcblog/2018/04/09/msvc-now-correctly-reports-__cplusplus/
+// use: /Zc:__cplusplus	/std:c++17
+#if __cplusplus < 201703L
+#error C++17 REQUIRED
+#endif
 
 #include <cstdint> 
 #include <cstdarg> 

@@ -84,6 +84,7 @@
       <CLanguageStandard>c99</CLanguageStandard>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -111,6 +112,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CLanguageStandard>c99</CLanguageStandard>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
